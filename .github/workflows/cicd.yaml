@@ -1,0 +1,58 @@
+name: ci backend
+on:
+  push:
+    branches: ['main']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3.3.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
+
+      - name: push base image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_ALIAS: i5i6z8x2
+          ECR_REPOSITORY: dev-hat629-ecr-chat
+        run: |
+          docker build -t dev-hat629-ecr-chat .
+          docker tag dev-hat629-ecr-chat ${{ env.ECR_REGISTRY }}/${{ env.ECR_ALIAS }}/${{ env.ECR_REPOSITORY }}:latest
+          docker tag dev-hat629-ecr-chat ${{ env.ECR_REGISTRY }}/${{ env.ECR_ALIAS }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_ALIAS }}/${{ env.ECR_REPOSITORY }} --all-tags
+
+      - name: Check out k8s repo
+        uses: actions/checkout@master
+        with:
+          repository: HAT-Here-And-There/here-and-there-kubernetes
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+
+      - name: Replace image tag in helm values
+        uses: mikefarah/yq@master
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        with:
+          cmd: yq eval -i '.image.tag = env(IMAGE_TAG)' 'application-helm/chat-service/values.yaml'
+
+      - name: Git config
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          git config --global user.email "deploy@hat.com"
+          git config --global user.name "DeployBot"
+          
+          git add application-helm/chat-service/values.yaml
+          git commit --message "Deploy: update image tag to $IMAGE_TAG"
+          git push --set-upstream origin main
