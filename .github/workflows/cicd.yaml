@@ -56,3 +56,13 @@ jobs:
           git add application-helm/chat-service/values.yaml
           git commit --message "Deploy: update image tag to $IMAGE_TAG"
           git push --set-upstream origin main
+
+      - name: action-slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{job.status}}
+          fields: repo, ref, workflow, message, author
+          author_name: 서버배포알림
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
