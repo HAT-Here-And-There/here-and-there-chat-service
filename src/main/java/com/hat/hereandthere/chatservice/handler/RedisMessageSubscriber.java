@@ -1,12 +1,19 @@
 package com.hat.hereandthere.chatservice.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hat.hereandthere.chatservice.chat.dto.ChatReceiveMessage;
+import com.hat.hereandthere.chatservice.chat.dto.ChatSendMessage;
 import com.hat.hereandthere.chatservice.utils.WebSocketSessionUtils;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +33,12 @@ public class RedisMessageSubscriber extends MessageListenerAdapter {
 
   private final RedisTemplate<String, Object> redisTemplate;
 
+  private final ObjectMapper objectMapper = new ObjectMapper();
+
+
   public RedisMessageSubscriber(RedisTemplate<String, Object> redisTemplate) {
     this.redisTemplate = redisTemplate;
-
+    this.objectMapper.registerModule(new JavaTimeModule());
   }
 
 
@@ -38,20 +48,22 @@ public class RedisMessageSubscriber extends MessageListenerAdapter {
 
   @Override
   public void onMessage(@NonNull Message message, byte[] pattern) {
-    log.warn("    RedisMessageSubscriber.onMessage message: {}", message);
-    log.warn("    RedisMessageSubscriber.onMessage message.getBody: {}", message.getBody());
-    log.warn("    RedisMessageSubscriber.onMessage message.getChannel: {}", message.getChannel());
+    final ChatSendMessage chatSendMessage;
+    try {
+      chatSendMessage = objectMapper.readValue(message.getBody(), ChatSendMessage.class);
 
-    final Long placeId = Long.parseLong(new String(message.getChannel(), StandardCharsets.UTF_8).split(":")[1]);
-    final Set<WebSocketSession> activeSessions = sessions.get(placeId);
-    activeSessions.forEach(webSocketSession -> {
-      try {
-        webSocketSession.sendMessage(new TextMessage(message.getBody()));
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    });
-
+      final ChatReceiveMessage chatReceiveMessage = new ChatReceiveMessage(
+          UUID.randomUUID().toString(),
+          chatSendMessage.userId(),
+          getPlaceId(message),
+          chatSendMessage.content(),
+          chatSendMessage.originChatId(),
+          OffsetDateTime.now(ZoneOffset.UTC)
+      );
+      sendMessage(chatReceiveMessage, getActiveSessionSet(message));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void addSession(WebSocketSession session) {
@@ -74,7 +86,23 @@ public class RedisMessageSubscriber extends MessageListenerAdapter {
       value.remove(session);
       return value;
     });
-
   }
 
+  private Long getPlaceId(@NonNull Message message) {
+    return Long.parseLong(new String(message.getChannel(), StandardCharsets.UTF_8).split(":")[1]);
+  }
+
+  private Set<WebSocketSession> getActiveSessionSet(@NonNull Message message) {
+    return sessions.get(getPlaceId(message));
+  }
+
+  private void sendMessage(ChatReceiveMessage chatReceiveMessage, Set<WebSocketSession> targetSessionSet) {
+    targetSessionSet.forEach(webSocketSession -> {
+      try {
+        webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatReceiveMessage)));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    });
+  }
 }
