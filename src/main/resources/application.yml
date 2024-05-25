@@ -2,11 +2,11 @@ spring:
   application:
     name: chat-service
   data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-    mongodb:
-      uri: mongodb://${MONGODB_HOST}:${MONGODB_PORT}/
-      database: ${MONGODB_DATABASE}
-      username: ${MONGODB_USERNAME}
-      password: ${MONGODB_PASSWORD}
+#    redis:
+#      host: ${REDIS_HOST}
+#      port: ${REDIS_PORT}
+#    mongodb:
+#      uri: mongodb://${MONGODB_HOST}:${MONGODB_PORT}/
+#      database: ${MONGODB_DATABASE}
+#      username: ${MONGODB_USERNAME}
+#      password: ${MONGODB_PASSWORD}

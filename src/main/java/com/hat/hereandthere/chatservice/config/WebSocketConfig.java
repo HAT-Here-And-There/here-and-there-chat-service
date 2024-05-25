@@ -1,7 +1,7 @@
 package com.hat.hereandthere.chatservice.config;
 
 import com.hat.hereandthere.chatservice.handler.PlaceChatHandler;
-import com.hat.hereandthere.chatservice.handler.RedisMessageSubscriber;
+//import com.hat.hereandthere.chatservice.handler.RedisMessageSubscriber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,13 +17,13 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 public class WebSocketConfig implements WebSocketConfigurer {
 
 
-  private final RedisMessageSubscriber redisMessageSubscriber;
-  private final RedisTemplate<String, Object> redisTemplate;
+//  private final RedisMessageSubscriber redisMessageSubscriber;
+//  private final RedisTemplate<String, Object> redisTemplate;
 
-  public WebSocketConfig(RedisMessageSubscriber redisMessageSubscriber, RedisTemplate<String, Object> redisTemplate) {
-    this.redisMessageSubscriber = redisMessageSubscriber;
-    this.redisTemplate = redisTemplate;
-  }
+//  public WebSocketConfig(RedisMessageSubscriber redisMessageSubscriber, RedisTemplate<String, Object> redisTemplate) {
+//    this.redisMessageSubscriber = redisMessageSubscriber;
+//    this.redisTemplate = redisTemplate;
+//  }
 
   @Override
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
@@ -36,7 +36,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
   @Bean
   public WebSocketHandler placeChatHandler() {
 
-    return new PlaceChatHandler(redisMessageSubscriber, redisTemplate);
+    return new PlaceChatHandler(
+//        redisMessageSubscriber,
+//        redisTemplate
+    );
   }
 }
 
