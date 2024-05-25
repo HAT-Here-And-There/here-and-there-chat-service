@@ -23,7 +23,7 @@ public class ChatService {
   }
 
 
-  public void saveChat(
+  public Chat saveChat(
       @NonNull Long userId,
       @NonNull Long placeId,
       @NonNull String content
@@ -35,10 +35,10 @@ public class ChatService {
         .replies(List.of())
         .build();
 
-    repository.save(chat);
+    return repository.save(chat);
   }
 
-  public void saveReply(
+  public Reply saveReply(
       @NonNull Long userId,
       @NonNull String content,
       @NonNull String originChatId
@@ -55,7 +55,11 @@ public class ChatService {
 
       originChat.getReplies().add(reply);
       repository.save(originChat);
+
+      return reply;
     }
+
+    throw new RuntimeException();
   }
 
   private Optional<Chat> getChat(String id) {
