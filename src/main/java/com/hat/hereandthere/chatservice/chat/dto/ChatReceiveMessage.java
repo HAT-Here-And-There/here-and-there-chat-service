@@ -7,7 +7,7 @@ import lombok.NonNull;
 
 @JsonSerialize
 public record ChatReceiveMessage(@NonNull String id,
-                                 @NonNull String userId,
+                                 @NonNull Long userId,
                                  @NonNull Long placeId,
                                  @NonNull String content,
                                  String originChatId,
