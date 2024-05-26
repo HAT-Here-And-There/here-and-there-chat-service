@@ -10,7 +10,7 @@ spring:
 #      database: ${MONGODB_DATABASE}
 #      username: ${MONGODB_USERNAME}
 #      password: ${MONGODB_PASSWORD}
-#      auto-index-creation: true
+      auto-index-creation: true
 logging:
   level:
     org:
