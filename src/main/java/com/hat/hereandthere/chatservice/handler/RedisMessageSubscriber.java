@@ -1,7 +1,6 @@
 package com.hat.hereandthere.chatservice.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hat.hereandthere.chatservice.chat.ChatService;
 import com.hat.hereandthere.chatservice.chat.dto.ChatReceiveMessage;
 import com.hat.hereandthere.chatservice.chat.dto.ChatSendMessage;
@@ -17,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -32,18 +30,16 @@ public class RedisMessageSubscriber extends MessageListenerAdapter {
   private final ConcurrentHashMap<Long, Set<WebSocketSession>> sessions = new ConcurrentHashMap<>();
 
   // 세션 저장용
-  private final RedisTemplate<String, Object> redisTemplate;
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper;
 
 
   public RedisMessageSubscriber(
       ChatService chatService,
-      RedisTemplate<String, Object> redisTemplate
+      ObjectMapper objectMapper
   ) {
     this.chatService = chatService;
-    this.redisTemplate = redisTemplate;
-    this.objectMapper.registerModule(new JavaTimeModule());
+    this.objectMapper = objectMapper;
   }
 
 
@@ -112,6 +108,15 @@ public class RedisMessageSubscriber extends MessageListenerAdapter {
       value.remove(session);
       return value;
     });
+  }
+
+  public boolean checkSession(WebSocketSession session) {
+    final Long placeId = WebSocketSessionUtils.getChannelId(session);
+    if (sessions.containsKey(placeId)) {
+      return sessions.get(placeId).contains(session);
+    }
+
+    return false;
   }
 
   private Long getPlaceId(@NonNull Message message) {

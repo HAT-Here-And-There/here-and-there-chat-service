@@ -39,7 +39,10 @@ public class PlaceChatHandler extends TextWebSocketHandler {
   @Override
   protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
     final String channel = "place:" + WebSocketSessionUtils.getChannelId(session);
-    redisTemplate.convertAndSend(channel, message.getPayload());
+    log.info("Session is managed by this pod: {}", redisMessageSubscriber.checkSession(session));
+    if (redisMessageSubscriber.checkSession(session)) {
+      redisTemplate.convertAndSend(channel, message.getPayload());
+    }
   }
 
   @Override
