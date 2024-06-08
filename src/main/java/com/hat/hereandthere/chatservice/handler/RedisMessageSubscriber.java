@@ -1,7 +1,6 @@
 package com.hat.hereandthere.chatservice.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hat.hereandthere.chatservice.chat.ChatService;
 import com.hat.hereandthere.chatservice.chat.dto.ChatReceiveMessage;
 import com.hat.hereandthere.chatservice.chat.dto.ChatSendMessage;
@@ -34,16 +33,17 @@ public class RedisMessageSubscriber extends MessageListenerAdapter {
   // 세션 저장용
   private final RedisTemplate<String, Object> redisTemplate;
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper;
 
 
   public RedisMessageSubscriber(
       ChatService chatService,
-      RedisTemplate<String, Object> redisTemplate
+      RedisTemplate<String, Object> redisTemplate,
+      ObjectMapper objectMapper
   ) {
     this.chatService = chatService;
     this.redisTemplate = redisTemplate;
-    this.objectMapper.registerModule(new JavaTimeModule());
+    this.objectMapper = objectMapper;
   }
 
 
