@@ -114,6 +114,15 @@ public class RedisMessageSubscriber extends MessageListenerAdapter {
     });
   }
 
+  public boolean checkSession(WebSocketSession session) {
+    final Long placeId = WebSocketSessionUtils.getChannelId(session);
+    if (sessions.containsKey(placeId)) {
+      return sessions.get(placeId).contains(session);
+    }
+
+    return false;
+  }
+
   private Long getPlaceId(@NonNull Message message) {
     return Long.parseLong(new String(message.getChannel(), StandardCharsets.UTF_8).split(":")[1]);
   }
