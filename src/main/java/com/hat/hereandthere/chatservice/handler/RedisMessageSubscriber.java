@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -31,18 +30,15 @@ public class RedisMessageSubscriber extends MessageListenerAdapter {
   private final ConcurrentHashMap<Long, Set<WebSocketSession>> sessions = new ConcurrentHashMap<>();
 
   // 세션 저장용
-  private final RedisTemplate<String, Object> redisTemplate;
 
   private final ObjectMapper objectMapper;
 
 
   public RedisMessageSubscriber(
       ChatService chatService,
-      RedisTemplate<String, Object> redisTemplate,
       ObjectMapper objectMapper
   ) {
     this.chatService = chatService;
-    this.redisTemplate = redisTemplate;
     this.objectMapper = objectMapper;
   }
 
