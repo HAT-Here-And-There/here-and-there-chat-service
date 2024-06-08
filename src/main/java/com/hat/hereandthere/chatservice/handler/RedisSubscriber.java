@@ -19,13 +19,13 @@ import org.springframework.web.socket.WebSocketSession;
 
 @Slf4j
 @Component
-public class RedisMessageSubscriber extends MessageListenerAdapter {
+public class RedisSubscriber extends MessageListenerAdapter {
 
   private final ConcurrentHashMap<Long, Set<WebSocketSession>> sessions = new ConcurrentHashMap<>();
   private final ObjectMapper objectMapper;
 
 
-  public RedisMessageSubscriber(
+  public RedisSubscriber(
       ObjectMapper objectMapper
   ) {
     this.objectMapper = objectMapper;

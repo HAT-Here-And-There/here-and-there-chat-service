@@ -22,29 +22,29 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 public class PlaceChatHandler extends TextWebSocketHandler {
 
   private final RedisPublisher redisPublisher;
-  private final RedisMessageSubscriber redisMessageSubscriber;
+  private final RedisSubscriber redisSubscriber;
   private final ChatService chatService;
   private final ObjectMapper objectMapper;
 
   public PlaceChatHandler(
       RedisPublisher redisPublisher,
-      RedisMessageSubscriber redisMessageSubscriber,
+      RedisSubscriber redisSubscriber,
       ChatService chatService,
       ObjectMapper objectMapper) {
     this.redisPublisher = redisPublisher;
-    this.redisMessageSubscriber = redisMessageSubscriber;
+    this.redisSubscriber = redisSubscriber;
     this.chatService = chatService;
     this.objectMapper = objectMapper;
   }
 
   @Override
   public void afterConnectionEstablished(@NonNull WebSocketSession session) {
-    redisMessageSubscriber.addSession(session);
+    redisSubscriber.addSession(session);
   }
 
   @Override
   public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
-    redisMessageSubscriber.removeSession(session);
+    redisSubscriber.removeSession(session);
   }
 
   @Override
@@ -108,7 +108,7 @@ public class PlaceChatHandler extends TextWebSocketHandler {
 
   @Override
   public void handleTransportError(@NonNull WebSocketSession session, @NonNull Throwable exception) throws IOException {
-    redisMessageSubscriber.removeSession(session);
+    redisSubscriber.removeSession(session);
     session.close();
   }
 }
