@@ -46,6 +46,13 @@ jobs:
         with:
           cmd: yq eval -i '.image.tag = env(IMAGE_TAG)' 'application-helm/chat-service/values.yaml'
 
+      - name: Replace image tag in helm values
+        uses: mikefarah/yq@master
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        with:
+          cmd: yq eval -i '.image.tag = env(IMAGE_TAG)' 'application-helm/chat-service/values-aws.yaml'
+
       - name: Git config
         env:
           IMAGE_TAG: ${{ github.sha }}
