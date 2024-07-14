@@ -62,6 +62,9 @@ public class PlaceChatHandler extends TextWebSocketHandler {
       log.error("Exception on parsing. {}", e.getMessage());
       session.close(CloseStatus.BAD_DATA);
     } catch (Exception e) {
+      for (StackTraceElement element : e.getStackTrace()) {
+        log.error(element.toString());
+      }
       log.error("Exception on publishing. {}", e.getMessage());
       session.close(CloseStatus.SERVER_ERROR);
     }
