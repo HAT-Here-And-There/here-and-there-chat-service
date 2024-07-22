@@ -8,6 +8,7 @@ spring:
     mongodb:
       uri: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DATABASE}
       auto-index-creation: true
+      authentication-database: admin
 logging:
   level:
     org:
