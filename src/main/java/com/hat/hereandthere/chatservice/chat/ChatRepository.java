@@ -3,6 +3,7 @@ package com.hat.hereandthere.chatservice.chat;
 import com.hat.hereandthere.chatservice.chat.entity.Chat;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,6 @@ public interface ChatRepository extends MongoRepository<Chat, String> {
 
   List<Chat> findByPlaceIdOrderByIdDesc(Long placeId, Pageable pageable);
 
+  @Aggregation(pipeline = { "{ '$group': { '_id': '$placeId' } }" })
+  List<Long> findDistinctPlaceIds();
 }
