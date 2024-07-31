@@ -19,10 +19,16 @@ public class ChatService {
 
     final private ChatRepository repository;
     final private ChatRepositoryCustom repositoryCustom;
+    final private ChatCountService chatCountService;
 
-    public ChatService(ChatRepository repository, ChatRepositoryCustom repositoryCustom) {
+    public ChatService(
+            ChatRepository repository,
+            ChatRepositoryCustom repositoryCustom,
+            ChatCountService chatCountService
+    ) {
         this.repository = repository;
         this.repositoryCustom = repositoryCustom;
+        this.chatCountService = chatCountService;
     }
 
 
@@ -38,7 +44,10 @@ public class ChatService {
                 .replies(List.of())
                 .build();
 
-        return repository.save(chat);
+        final Chat newChat = repository.save(chat);
+        chatCountService.increaseChatCount(placeId);
+
+        return newChat;
     }
 
     public Reply saveReply(
@@ -78,7 +87,7 @@ public class ChatService {
         return chatList.stream().map(this::chatToDto).toList();
     }
 
-    public Object getChatCount(@NonNull List<Long> placeIdList) {
+    public Map<Long, Integer> getChatCount(@NonNull List<Long> placeIdList) {
         return repositoryCustom.countByPlaceIds(Set.copyOf(placeIdList));
     }
 

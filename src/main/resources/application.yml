@@ -15,3 +15,6 @@ logging:
       springframework:
         data:
           mongodb: debug
+
+tour-service:
+  url: http://tour-service-aws

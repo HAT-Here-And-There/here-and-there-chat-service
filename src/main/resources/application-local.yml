@@ -14,3 +14,6 @@ logging:
       springframework:
         data:
           mongodb: debug
+
+tour-service:
+  url: http://localhost:8081
