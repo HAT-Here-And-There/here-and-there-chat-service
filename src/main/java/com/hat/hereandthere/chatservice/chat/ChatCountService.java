@@ -1,14 +1,13 @@
 package com.hat.hereandthere.chatservice.chat;
 
 import com.hat.hereandthere.chatservice.chat.dto.GetPlaceMetaDto;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-@Slf4j
+
 @Service
 public class ChatCountService {
     final private RedisTemplate<String, Long> redisTemplate;
@@ -30,7 +29,6 @@ public class ChatCountService {
         final boolean isCached = redisTemplate.opsForHash().hasKey(key, "major_region_id")
                 && redisTemplate.opsForHash().hasKey(key, "sigungu_id");
 
-        log.error("isCached: {}", isCached);
         if (isCached) {
             return new GetPlaceMetaDto(
                     placeId,
@@ -61,7 +59,6 @@ public class ChatCountService {
     // add chat count
     @Transactional
     public void increaseChatCount(Long placeId) {
-        log.error("increaseChatCount: {}", placeId);
         final GetPlaceMetaDto getPlaceMetaDto = getPlaceMetadataFromRedis(placeId);
 
         redisTemplate.opsForZSet().incrementScore("place_chat_count", placeId, 1);

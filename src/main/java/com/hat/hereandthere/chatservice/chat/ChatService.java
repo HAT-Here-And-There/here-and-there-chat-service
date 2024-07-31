@@ -8,12 +8,11 @@ import com.hat.hereandthere.chatservice.chat.entity.Reply;
 import java.util.*;
 
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-@Slf4j
+
 @Service
 public class ChatService {
 

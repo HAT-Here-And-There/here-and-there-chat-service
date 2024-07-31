@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +23,7 @@ import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventLis
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@Slf4j
+
 @EnableMongoRepositories(basePackages = "com.hat.hereandthere.chatservice")
 @EnableMongoAuditing
 @Configuration

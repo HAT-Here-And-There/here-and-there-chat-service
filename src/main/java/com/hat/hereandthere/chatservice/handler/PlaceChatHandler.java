@@ -59,7 +59,6 @@ public class PlaceChatHandler extends TextWebSocketHandler {
 
       redisPublisher.publish(channel, objectMapper.writeValueAsString(receiveMessage));
     } catch (JsonProcessingException e) {
-      log.error("Exception on parsing. {}", e.getMessage());
       session.close(CloseStatus.BAD_DATA);
     } catch (Exception e) {
       log.error("Exception on publishing. {}", e.getMessage());

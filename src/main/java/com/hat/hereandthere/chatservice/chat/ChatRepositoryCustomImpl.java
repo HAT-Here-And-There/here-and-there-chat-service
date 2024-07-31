@@ -1,6 +1,5 @@
 package com.hat.hereandthere.chatservice.chat;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -12,7 +11,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-@Slf4j
 @Repository
 public class ChatRepositoryCustomImpl implements ChatRepositoryCustom {
     static final String PLACE_ID = "placeId";
