@@ -16,4 +16,4 @@ logging:
           mongodb: debug
 
 tour-service:
-  url: http://localhost:8081
+  url: ${TOUR_SERVICE_URL}
