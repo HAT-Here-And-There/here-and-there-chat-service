@@ -1,6 +1,5 @@
 package com.hat.hereandthere.chatservice.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,9 +9,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-@Slf4j
+
 @Configuration
 public class RedisConfig {
 
@@ -28,11 +28,24 @@ public class RedisConfig {
   }
 
   @Bean
-  RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-    final RedisTemplate<String, Object> template = new RedisTemplate<>();
+  public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory connectionFactory) {
+
+    final RedisTemplate<String, String> template = new RedisTemplate<>();
     template.setConnectionFactory(connectionFactory);
     template.setKeySerializer(new StringRedisSerializer());
     template.setValueSerializer(new StringRedisSerializer());
+    return template;
+  }
+
+
+  @Bean
+  public RedisTemplate<String, Long> longRedisTemplate(RedisConnectionFactory connectionFactory) {
+    final RedisTemplate<String, Long> template = new RedisTemplate<>();
+    template.setConnectionFactory(connectionFactory);
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(new GenericToStringSerializer<>(Long.class));
+    template.setHashKeySerializer(new StringRedisSerializer());
+    template.setHashValueSerializer(new GenericToStringSerializer<>(Long.class));
     return template;
   }
 

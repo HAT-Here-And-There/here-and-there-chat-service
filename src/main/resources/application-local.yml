@@ -14,3 +14,6 @@ logging:
       springframework:
         data:
           mongodb: debug
+
+tour-service:
+  url: ${TOUR_SERVICE_URL}
