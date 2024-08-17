@@ -74,6 +74,7 @@ public class MongoConfig {
 
     @Bean
     MongoClient mongoClient() {
+        System.out.println(mongoUri);
         return MongoClients.create(mongoUri);
     }
 
