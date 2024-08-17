@@ -18,16 +18,16 @@ public class ChatService {
 
     final private ChatRepository repository;
     final private ChatRepositoryCustom repositoryCustom;
-    final private ChatCountService chatCountService;
+    final private PlaceService placeService;
 
     public ChatService(
             ChatRepository repository,
             ChatRepositoryCustom repositoryCustom,
-            ChatCountService chatCountService
+            PlaceService placeService
     ) {
         this.repository = repository;
         this.repositoryCustom = repositoryCustom;
-        this.chatCountService = chatCountService;
+        this.placeService = placeService;
     }
 
 
@@ -44,7 +44,7 @@ public class ChatService {
                 .build();
 
         final Chat newChat = repository.save(chat);
-        chatCountService.increaseChatCount(placeId);
+        placeService.increaseChatCount(placeId);
 
         return newChat;
     }
