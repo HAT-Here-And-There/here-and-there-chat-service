@@ -23,7 +23,6 @@ public class PlaceController {
             @RequestParam(value = "areaId", required = false) Long areaId,
             @RequestParam(value = "sigunguId", required = false) Long sigunguId
     ) {
-        log.error("majorRegionId: {}, areaId: {}, sigunguId: {}", majorRegionId, areaId, sigunguId);
         if (majorRegionId != null && areaId == null && sigunguId == null) {
             return ResponseEntity.ok(placeService.getPlaceChatCountByMajorRegionId(page, pageSize, majorRegionId));
         }

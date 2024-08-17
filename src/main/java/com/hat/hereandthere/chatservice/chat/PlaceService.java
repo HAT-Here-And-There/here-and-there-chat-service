@@ -41,7 +41,6 @@ public class PlaceService {
     // add chat count
     @Transactional
     public void increaseChatCount(Long placeId) {
-        log.error("increase chat count: {}", placeId);
         try {
             final GetPlaceMetaDto getPlaceMetaDto = getPlaceMetadataFromRedis(placeId);
 
@@ -55,7 +54,6 @@ public class PlaceService {
                             1
                     );
         } catch (RestClientException e) {
-            // tour-service와 연동 필요
             log.error("increase chat count failed: {}", e.getMessage());
         }
     }
