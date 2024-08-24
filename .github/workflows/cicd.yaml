@@ -1,7 +1,7 @@
 name: ci backend
 on:
   push:
-    branches: ['main']
+    branches: ["main-invalid"]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -59,7 +59,7 @@ jobs:
         run: |
           git config --global user.email "deploy@hat.com"
           git config --global user.name "DeployBot"
-          
+
           git add application-helm/chat-service/values.yaml
           git add application-helm/chat-service/values-aws.yaml
           git commit --message "Deploy: update image tag to $IMAGE_TAG"
