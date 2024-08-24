@@ -21,7 +21,7 @@ public class PlaceScheduler {
     private final RedisTemplate<String, Long> longRedisTemplate;
     private final PlaceService placeService;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 */10 * * * ?")
     public void countChatsAndSaveToRedis() {
         log.info("counting chat task is started!");
         List<Long> placeIds = chatRepository.findDistinctPlaceIds();
